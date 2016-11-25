@@ -1,0 +1,9 @@
+rootProject.projectDir = new File(settingsDir, '../../../../..')
+rootProject.name = "Oculus360VideosSDK"
+
+include ':', \
+	'VrAppFramework:Projects:AndroidPrebuilt', \
+	'VrAppSupport:VrLocale:Projects:AndroidPrebuilt', \
+	'VrAppSupport:VrSound:Projects:AndroidPrebuilt', \
+	'VrSamples:Native:Oculus360VideosSDK:Projects:Android', \
+	'VrAppSupport:VrGUI:Projects:AndroidPrebuilt'
