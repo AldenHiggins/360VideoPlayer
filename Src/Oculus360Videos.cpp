@@ -1023,6 +1023,15 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 	// Rendering
 	//-------------------------------
 
+	// Check to see where the current forward vector is
+	Vector3f startingForward;
+	startingForward.z = 1.0f;
+	ovrQuatf ovrQuat = vrFrame.Tracking.HeadPose.Pose.Orientation;
+	Quat<float> rotationQuat = Quat<float>(ovrQuat.x, ovrQuat.y, ovrQuat.z, ovrQuat.w);
+	Vector3f rotatedForwardVector = rotationQuat.Rotate(startingForward);
+
+	LOG("Rotated forward, X: %f Y: %f Z: %f", rotatedForwardVector.x, rotatedForwardVector.y, rotatedForwardVector.z);
+
 	FrameParms = vrapi_DefaultFrameParms( app->GetJava(), VRAPI_FRAME_INIT_DEFAULT, vrapi_GetTimeInSeconds(), NULL );
 
 	FrameParms.LayerCount = 1;
