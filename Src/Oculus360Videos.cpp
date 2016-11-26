@@ -988,7 +988,6 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 	else if ( ( MenuState == MENU_VIDEO_READY ) && ( Fader.GetFadeAlpha() == 0.0f ) && ( MovieTexture != NULL ) )
 	{
 		SetMenuState( MENU_VIDEO_PLAYING );
-		app->RecenterYaw( true );
 	}
 	CurrentFadeLevel = Fader.GetFinalAlpha();
 
