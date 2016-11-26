@@ -812,6 +812,7 @@ void Oculus360Videos::SetMenuState( const OvrMenuState state )
 		GuiSys->GetGazeCursor().HideCursor();
 		break;
 	case MENU_VIDEO_READY:
+		ResumeVideo();
 		break;
 	case MENU_VIDEO_PLAYING:
 		Fader.Reset();
@@ -820,15 +821,43 @@ void Oculus360Videos::SetMenuState( const OvrMenuState state )
 		{
 			// Need to pause video, because HMD was unmounted during loading and we weren't able to
 			// pause during loading.
-			PauseVideo( false );
+			// PauseVideo( false );
 			GuiSys->GetGazeCursor().ShowCursor();
 		}
 		break;
 	case MENU_VIDEO_PAUSE:
-		GuiSys->OpenMenu( OvrVideoMenu::MENU_NAME );
-		VideoMenu->RepositionMenu( app->GetLastViewMatrix() );
-		PauseVideo( false );
-		GuiSys->GetGazeCursor().ShowCursor();
+		// THE OLD PAUSE MENU
+		// GuiSys->OpenMenu( OvrVideoMenu::MENU_NAME );
+		// VideoMenu->RepositionMenu( app->GetLastViewMatrix() );
+		// PauseVideo( false );
+		// GuiSys->GetGazeCursor().ShowCursor();
+		LOG("Paused the video!!!!!");
+
+		if (TempVideoMetaData == NULL)
+		{
+			LOG("Initializing our fake video meta data");
+			TempVideoMetaData = new OvrVideosMetaDatum("TestingOneTwoThree");
+			TempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/SampleVideo.mp4";
+
+			SecondTempVideoMetaData = new OvrVideosMetaDatum("FourFiveSixTest");
+			SecondTempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/MusicVideo.mp4";
+
+			ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
+			StartVideo( vrapi_GetTimeInSeconds() );
+			LOG("Changed active video and tried to start a new one");
+		}
+		else if (ActiveVideo == TempVideoMetaData)
+		{
+			LOG("Changed active back to first");
+			ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
+			StartVideo( vrapi_GetTimeInSeconds() );
+		}
+		else if (ActiveVideo == SecondTempVideoMetaData)
+		{
+			LOG("Changed active back to temp video meta data");
+			ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
+			StartVideo( vrapi_GetTimeInSeconds() );
+		}
 		break;
 	case MENU_VIDEO_RESUME:
 		GuiSys->CloseMenu( VideoMenu, false );

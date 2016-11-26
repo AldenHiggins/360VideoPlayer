@@ -4,7 +4,7 @@
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Types.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Compiler.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Allocator.h \
-  f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new \
+  D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_UTF8Util.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Atomic.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Std.h \
@@ -32,7 +32,7 @@ jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../Li
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Allocator.h:
 
-f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new:
+D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new:
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_UTF8Util.h:
 

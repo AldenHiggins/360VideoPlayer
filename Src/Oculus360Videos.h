@@ -27,6 +27,7 @@ namespace OVR
 {
 
 class OvrVideosMetaData;
+struct OvrVideosMetaDatum;
 class OvrMetaData;
 struct OvrMetaDatum;
 class VideoBrowser;
@@ -121,6 +122,8 @@ private:
 
 	Array< String > 		SearchPaths;
 	OvrVideosMetaData *		MetaData;
+	OvrVideosMetaDatum *	TempVideoMetaData;
+	OvrVideosMetaDatum *	SecondTempVideoMetaData;
 	VideoBrowser *			Browser;
 	OvrVideoMenu *			VideoMenu;
 	const OvrMetaDatum *	ActiveVideo;
