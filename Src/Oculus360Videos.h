@@ -95,6 +95,8 @@ private:
 	Matrix4f				TexmForVideo( const int eye );
 	Matrix4f				TexmForBackground( const int eye );
 
+	void					CheckToSwitchVideo(Quat<float> rotationQuat);
+
 private:
 	jclass					MainActivityClass;	// need to look up from main thread
 	ovrMessageQueue			MessageQueue;

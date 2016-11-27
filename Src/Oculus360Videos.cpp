@@ -440,6 +440,14 @@ void Oculus360Videos::EnteredVrMode( const ovrIntentType intentType, const char 
 		Browser->OneTimeInit( *GuiSys );
 		Browser->BuildDirtyMenu( *GuiSys, *MetaData );
 
+		// Initialize our two temporary videos
+		LOG("Initializing our fake video meta data");
+		TempVideoMetaData = new OvrVideosMetaDatum("TestingOneTwoThree");
+		TempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/SampleVideo.mp4";
+
+		SecondTempVideoMetaData = new OvrVideosMetaDatum("FourFiveSixTest");
+		SecondTempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/MusicVideo.mp4";
+
 		SetMenuState( MENU_BROWSER );
 	}
 	else if ( intentType == INTENT_NEW )
@@ -495,6 +503,8 @@ void Oculus360Videos::Command( const char * msg )
 	// Always include the space in MatchesHead to prevent problems
 	// with commands with matching prefixes.
 
+	LOG("The message is.....: %s", msg );
+
 	if ( MatchesHead( "newVideo ", msg ) )
 	{
 		delete MovieTexture;
@@ -519,6 +529,10 @@ void Oculus360Videos::Command( const char * msg )
 	else if ( MatchesHead( "video ", msg ) )
 	{
 		sscanf( msg, "video %i %i", &CurrentVideoWidth, &CurrentVideoHeight );
+
+		// SetMenuState( MENU_VIDEO_PAUSE );
+
+
 
 		if ( MenuState != MENU_VIDEO_PLAYING ) // If video is already being played dont change the state to video ready
 		{
@@ -892,7 +906,7 @@ const char * Oculus360Videos::MenuStateString( const OvrMenuState state )
 
 void Oculus360Videos::OnVideoActivated( const OvrMetaDatum * videoData )
 {
-	ActiveVideo = videoData;
+	ActiveVideo = SecondTempVideoMetaData;
 	StartVideo( vrapi_GetTimeInSeconds() );
 }
 
@@ -1023,14 +1037,10 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 	// Rendering
 	//-------------------------------
 
-	// Check to see where the current forward vector is
-	Vector3f startingForward;
-	startingForward.z = 1.0f;
+	// Check to see if we should switch the video
 	ovrQuatf ovrQuat = vrFrame.Tracking.HeadPose.Pose.Orientation;
 	Quat<float> rotationQuat = Quat<float>(ovrQuat.x, ovrQuat.y, ovrQuat.z, ovrQuat.w);
-	Vector3f rotatedForwardVector = rotationQuat.Rotate(startingForward);
-
-	LOG("Rotated forward, X: %f Y: %f Z: %f", rotatedForwardVector.x, rotatedForwardVector.y, rotatedForwardVector.z);
+	CheckToSwitchVideo(rotationQuat);
 
 	FrameParms = vrapi_DefaultFrameParms( app->GetJava(), VRAPI_FRAME_INIT_DEFAULT, vrapi_GetTimeInSeconds(), NULL );
 
@@ -1082,6 +1092,50 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 
 	res.FrameParms = (ovrFrameParmsExtBase *) & FrameParms;
 	return res;
+}
+
+void Oculus360Videos::CheckToSwitchVideo(Quat<float> rotationQuat)
+{
+	// Check to see where the current forward vector is
+	Vector3f startingForward;
+	startingForward.z = 1.0f;
+	Vector3f rotatedForwardVector = rotationQuat.Rotate(startingForward);
+
+	// LOG("Rotated forward, X: %f Y: %f Z: %f", rotatedForwardVector.x, rotatedForwardVector.y, rotatedForwardVector.z);
+
+	float dotProduct = rotatedForwardVector.Dot(startingForward);
+
+	// LOG("Dot from start: %f", dotProduct);
+
+	if (ActiveVideo == TempVideoMetaData)
+	{
+		// LOG("We're in the first video");
+
+		if (dotProduct < 0.0f)
+		{
+			LOG("Facing away and switching to the second video");
+			ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
+			MessageQueue.PostPrintf( "video 2048 1024");
+		
+			// StartVideo( vrapi_GetTimeInSeconds() );
+		}
+	}
+	else if (ActiveVideo == SecondTempVideoMetaData)
+	{
+		// LOG("We're in the second video");
+
+		if (dotProduct >= 0.0f)
+		{
+			LOG("Facing forward and reverting back to teh first video");
+			ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
+			MessageQueue.PostPrintf( "video 1920 960");
+
+			
+
+			// StartVideo( vrapi_GetTimeInSeconds() );
+		}
+	}
+
 }
 
 } // namespace OVR
