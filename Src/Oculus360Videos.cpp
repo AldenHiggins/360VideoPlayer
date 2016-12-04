@@ -847,20 +847,20 @@ void Oculus360Videos::SetMenuState( const OvrMenuState state )
 		// GuiSys->GetGazeCursor().ShowCursor();
 		LOG("Paused the video!!!!!");
 
-		if (TempVideoMetaData == NULL)
-		{
-			LOG("Initializing our fake video meta data");
-			TempVideoMetaData = new OvrVideosMetaDatum("TestingOneTwoThree");
-			TempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/SampleVideo.mp4";
+		// if (TempVideoMetaData == NULL)
+		// {
+		// 	LOG("Initializing our fake video meta data");
+		// 	TempVideoMetaData = new OvrVideosMetaDatum("TestingOneTwoThree");
+		// 	TempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/SampleVideo.mp4";
 
-			SecondTempVideoMetaData = new OvrVideosMetaDatum("FourFiveSixTest");
-			SecondTempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/MusicVideo.mp4";
+		// 	SecondTempVideoMetaData = new OvrVideosMetaDatum("FourFiveSixTest");
+		// 	SecondTempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/MusicVideo.mp4";
 
-			ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
-			StartVideo( vrapi_GetTimeInSeconds() );
-			LOG("Changed active video and tried to start a new one");
-		}
-		else if (ActiveVideo == TempVideoMetaData)
+		// 	ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
+		// 	StartVideo( vrapi_GetTimeInSeconds() );
+		// 	LOG("Changed active video and tried to start a new one");
+		// }
+		if (ActiveVideo == TempVideoMetaData)
 		{
 			LOG("Changed active back to first");
 			ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
@@ -912,6 +912,7 @@ void Oculus360Videos::OnVideoActivated( const OvrMetaDatum * videoData )
 
 ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 {
+
 	// process input events first because this mirrors the behavior when OnKeyEvent was
 	// a virtual function on VrAppInterface and was called by VrAppFramework.
 	for ( int i = 0; i < vrFrame.Input.NumKeyEvents; i++ )
@@ -1038,9 +1039,9 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 	//-------------------------------
 
 	// Check to see if we should switch the video
-	ovrQuatf ovrQuat = vrFrame.Tracking.HeadPose.Pose.Orientation;
-	Quat<float> rotationQuat = Quat<float>(ovrQuat.x, ovrQuat.y, ovrQuat.z, ovrQuat.w);
-	CheckToSwitchVideo(rotationQuat);
+	// ovrQuatf ovrQuat = vrFrame.Tracking.HeadPose.Pose.Orientation;
+	// Quat<float> rotationQuat = Quat<float>(ovrQuat.x, ovrQuat.y, ovrQuat.z, ovrQuat.w);
+	// CheckToSwitchVideo(rotationQuat);
 
 	FrameParms = vrapi_DefaultFrameParms( app->GetJava(), VRAPI_FRAME_INIT_DEFAULT, vrapi_GetTimeInSeconds(), NULL );
 
@@ -1115,9 +1116,9 @@ void Oculus360Videos::CheckToSwitchVideo(Quat<float> rotationQuat)
 		{
 			LOG("Facing away and switching to the second video");
 			ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
-			MessageQueue.PostPrintf( "video 2048 1024");
+			// MessageQueue.PostPrintf( "video 2048 1024");
 		
-			// StartVideo( vrapi_GetTimeInSeconds() );
+			StartVideo( vrapi_GetTimeInSeconds() );
 		}
 	}
 	else if (ActiveVideo == SecondTempVideoMetaData)
@@ -1128,11 +1129,11 @@ void Oculus360Videos::CheckToSwitchVideo(Quat<float> rotationQuat)
 		{
 			LOG("Facing forward and reverting back to teh first video");
 			ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
-			MessageQueue.PostPrintf( "video 1920 960");
+			// MessageQueue.PostPrintf( "video 1920 960");
 
 			
 
-			// StartVideo( vrapi_GetTimeInSeconds() );
+			StartVideo( vrapi_GetTimeInSeconds() );
 		}
 	}
 

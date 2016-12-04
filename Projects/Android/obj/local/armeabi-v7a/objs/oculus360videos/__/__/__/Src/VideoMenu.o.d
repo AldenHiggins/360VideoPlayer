@@ -10,7 +10,7 @@
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Array.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_ContainerAllocator.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Allocator.h \
-  D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new \
+  f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_String.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_UTF8Util.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Atomic.h \
@@ -25,7 +25,7 @@
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../Include/GpuState.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../Include/GlTexture.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_MemBuffer.h \
-  D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef \
+  f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../VrApi/Include\VrApi_Types.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../VrApi/Include/VrApi_Config.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../Include/GlBuffer.h \
@@ -73,7 +73,7 @@
   jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include\SoundEffectContext.h \
   jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include/SoundAssetMapping.h \
   jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include/SoundPool.h \
-  D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory \
+  f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory \
   jni/../../../Src/VideosMetaData.h
 
 jni/../../../Src/VideoMenu.h:
@@ -98,7 +98,7 @@ jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../Li
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Allocator.h:
 
-D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new:
+f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new:
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_String.h:
 
@@ -128,7 +128,7 @@ jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../Inclu
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_MemBuffer.h:
 
-D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef:
+f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef:
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../VrApi/Include\VrApi_Types.h:
 
@@ -224,6 +224,6 @@ jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../..
 
 jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include/SoundPool.h:
 
-D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory:
+f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory:
 
 jni/../../../Src/VideosMetaData.h:

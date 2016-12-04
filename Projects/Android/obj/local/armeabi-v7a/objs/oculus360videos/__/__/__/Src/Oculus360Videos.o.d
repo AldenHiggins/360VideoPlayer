@@ -10,7 +10,7 @@
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Array.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_ContainerAllocator.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Allocator.h \
-  D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new \
+  f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_String.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_UTF8Util.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Atomic.h \
@@ -22,7 +22,7 @@
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../Include\GlTexture.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_BitFlags.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_MemBuffer.h \
-  D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef \
+  f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef \
   jni/../../../../../../VrAppSupport/VrGUI/Projects/AndroidPrebuilt/jni/../../../Src\GazeCursor.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../Include\SurfaceRender.h \
   jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../Include/GlGeometry.h \
@@ -59,7 +59,7 @@
   jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include\SoundEffectContext.h \
   jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include/SoundAssetMapping.h \
   jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include/SoundPool.h \
-  D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory \
+  f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory \
   jni/../../../../../../VrAppSupport/VrGUI/Projects/AndroidPrebuilt/jni/../../../Src\GuiSys.h \
   jni/../../../../../../VrAppSupport/VrGUI/Projects/AndroidPrebuilt/jni/../../../Src/VRMenuObject.h \
   jni/../../../../../../VrAppSupport/VrGUI/Projects/AndroidPrebuilt/jni/../../../Src/CollisionPrimitive.h \
@@ -98,7 +98,7 @@ jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../Li
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_Allocator.h:
 
-D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new:
+f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\new:
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_String.h:
 
@@ -122,7 +122,7 @@ jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../Li
 
 jni/../../../../../../VrAppFramework/Projects/AndroidPrebuilt/jni/../../../../LibOVRKernel/Src\Kernel/OVR_MemBuffer.h:
 
-D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef:
+f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\cstddef:
 
 jni/../../../../../../VrAppSupport/VrGUI/Projects/AndroidPrebuilt/jni/../../../Src\GazeCursor.h:
 
@@ -196,7 +196,7 @@ jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../..
 
 jni/../../../../../../VrAppSupport/VrSound/Projects/AndroidPrebuilt/jni/../../../Include/SoundPool.h:
 
-D:/Development/android-ndk-r13b/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory:
+f:/Programs/AndroidNDK/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\memory:
 
 jni/../../../../../../VrAppSupport/VrGUI/Projects/AndroidPrebuilt/jni/../../../Src\GuiSys.h:
 
