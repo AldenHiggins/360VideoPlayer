@@ -841,11 +841,11 @@ void Oculus360Videos::SetMenuState( const OvrMenuState state )
 		break;
 	case MENU_VIDEO_PAUSE:
 		// THE OLD PAUSE MENU
-		// GuiSys->OpenMenu( OvrVideoMenu::MENU_NAME );
-		// VideoMenu->RepositionMenu( app->GetLastViewMatrix() );
-		// PauseVideo( false );
-		// GuiSys->GetGazeCursor().ShowCursor();
-		LOG("Paused the video!!!!!");
+		GuiSys->OpenMenu( OvrVideoMenu::MENU_NAME );
+		VideoMenu->RepositionMenu( app->GetLastViewMatrix() );
+		PauseVideo( false );
+		GuiSys->GetGazeCursor().ShowCursor();
+		// LOG("Paused the video!!!!!");
 
 		// if (TempVideoMetaData == NULL)
 		// {
@@ -860,18 +860,18 @@ void Oculus360Videos::SetMenuState( const OvrMenuState state )
 		// 	StartVideo( vrapi_GetTimeInSeconds() );
 		// 	LOG("Changed active video and tried to start a new one");
 		// }
-		if (ActiveVideo == TempVideoMetaData)
-		{
-			LOG("Changed active back to first");
-			ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
-			StartVideo( vrapi_GetTimeInSeconds() );
-		}
-		else if (ActiveVideo == SecondTempVideoMetaData)
-		{
-			LOG("Changed active back to temp video meta data");
-			ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
-			StartVideo( vrapi_GetTimeInSeconds() );
-		}
+		// if (ActiveVideo == TempVideoMetaData)
+		// {
+		// 	LOG("Changed active back to first");
+		// 	ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
+		// 	StartVideo( vrapi_GetTimeInSeconds() );
+		// }
+		// else if (ActiveVideo == SecondTempVideoMetaData)
+		// {
+		// 	LOG("Changed active back to temp video meta data");
+		// 	ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
+		// 	StartVideo( vrapi_GetTimeInSeconds() );
+		// }
 		break;
 	case MENU_VIDEO_RESUME:
 		GuiSys->CloseMenu( VideoMenu, false );
@@ -912,6 +912,12 @@ void Oculus360Videos::OnVideoActivated( const OvrMetaDatum * videoData )
 
 ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 {
+
+	// Check to see if we should switch the video
+	ovrQuatf ovrQuat = vrFrame.Tracking.HeadPose.Pose.Orientation;
+	Quat<float> rotationQuat = Quat<float>(ovrQuat.x, ovrQuat.y, ovrQuat.z, ovrQuat.w);
+	CheckToSwitchVideo(rotationQuat);
+
 
 	// process input events first because this mirrors the behavior when OnKeyEvent was
 	// a virtual function on VrAppInterface and was called by VrAppFramework.
@@ -1037,11 +1043,6 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 	//-------------------------------
 	// Rendering
 	//-------------------------------
-
-	// Check to see if we should switch the video
-	// ovrQuatf ovrQuat = vrFrame.Tracking.HeadPose.Pose.Orientation;
-	// Quat<float> rotationQuat = Quat<float>(ovrQuat.x, ovrQuat.y, ovrQuat.z, ovrQuat.w);
-	// CheckToSwitchVideo(rotationQuat);
 
 	FrameParms = vrapi_DefaultFrameParms( app->GetJava(), VRAPI_FRAME_INIT_DEFAULT, vrapi_GetTimeInSeconds(), NULL );
 
