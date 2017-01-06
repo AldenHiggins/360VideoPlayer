@@ -53,6 +53,14 @@ public class MainActivity extends VrActivity implements android.graphics.Surface
 	MediaPlayer mediaPlayer = null;	
 	AudioManager audioManager = null;
 
+	// Create a second set of video variables to allow for seamless swaps between two videos
+	SurfaceTexture secondMovieTexture = null;
+	Surface secondMovieSurface = null;
+	MediaPlayer secondMediaPlayer = null;
+
+	boolean isUsingSecondMovie = true;
+
+
 	// ==================================================================================
 
 	void requestAudioFocus()
@@ -247,63 +255,101 @@ public class MainActivity extends VrActivity implements android.graphics.Surface
 		{
 			// Request audio focus
 			requestAudioFocus();
-		
-			// Have native code pause any playing movie,
-			// allocate a new external texture,
-			// and create a surfaceTexture with it.
-			movieTexture = nativePrepareNewVideo(getAppPtr());
-			movieTexture.setOnFrameAvailableListener(this);
-			movieSurface = new Surface(movieTexture);
 
-			if (mediaPlayer != null) {
-				mediaPlayer.release();
-			}
+			// SurfaceTexture movieTexture = null;
+			// Surface movieSurface = null;
+			// MediaPlayer mediaPlayer = null;	
+			// AudioManager audioManager = null;
 
-			Log.v(TAG, "MediaPlayer.create");
+			// // Create a second set of video variables to allow for seamless swaps between two videos
+			// SurfaceTexture secondMovieTexture = null;
+			// Surface secondMovieSurface = null;
+			// MediaPlayer secondMediaPlayer = null;
 
-			synchronized (this) {
-				mediaPlayer = new MediaPlayer();
-			}
-			mediaPlayer.setOnVideoSizeChangedListener(this);
-			mediaPlayer.setOnCompletionListener(this);
-			mediaPlayer.setSurface(movieSurface);
+			// boolean isUsingSecondMovie = true;
 
-			try {
-				Log.v(TAG, "mediaPlayer.setDataSource()");
-				mediaPlayer.setDataSource(pathName);
-				try {
-					Log.v(TAG, "mediaPlayer.prepare");
-					mediaPlayer.prepare();
-				} catch (IOException t) {
-					Log.e(TAG, "mediaPlayer.prepare failed:" + t.getMessage());
+			if (isUsingSecondMovie)
+			{
+				// Have native code pause any playing movie,
+				// allocate a new external texture,
+				// and create a surfaceTexture with it.
+				movieTexture = nativePrepareNewVideo(getAppPtr());
+				movieTexture.setOnFrameAvailableListener(this);
+				movieSurface = new Surface(movieTexture);
+
+				if (mediaPlayer != null) 
+				{
+					mediaPlayer.release();
 				}
-			} catch (IOException t) {
-				Log.e(TAG, "mediaPlayer.setDataSource failed");
-			}
-			Log.v(TAG, "mediaPlayer.start");
 
-			// If this movie has a saved position, seek there before starting
-			// This seems to make movie switching crashier.
-			final int seekPos = getPreferences(MODE_PRIVATE).getInt(pathName + "_pos", 0);
-			if (seekPos > 0) {
-				try {
-					mediaPlayer.seekTo(seekPos);
+				Log.v(TAG, "MediaPlayer.create");
+
+				synchronized (this) 
+				{
+					mediaPlayer = new MediaPlayer();
 				}
-				catch( IllegalStateException ise ) {
-					Log.d( TAG, "mediaPlayer.seekTo(): Caught illegalStateException: " + ise.toString() );
+				mediaPlayer.setOnVideoSizeChangedListener(this);
+				mediaPlayer.setOnCompletionListener(this);
+				mediaPlayer.setSurface(movieSurface);
+
+				try 
+				{
+					Log.v(TAG, "mediaPlayer.setDataSource()");
+					mediaPlayer.setDataSource(pathName);
+					try 
+					{
+						Log.v(TAG, "mediaPlayer.prepare");
+						mediaPlayer.prepare();
+					} 
+					catch (IOException t) 
+					{
+						Log.e(TAG, "mediaPlayer.prepare failed:" + t.getMessage());
+					}
+				} 
+				catch (IOException t)
+				{
+					Log.e(TAG, "mediaPlayer.setDataSource failed");
 				}
+
+				Log.v(TAG, "mediaPlayer.start");
+
+				// If this movie has a saved position, seek there before starting
+				// This seems to make movie switching crashier.
+				final int seekPos = getPreferences(MODE_PRIVATE).getInt(pathName + "_pos", 0);
+				if (seekPos > 0) 
+				{
+					try 
+					{
+						mediaPlayer.seekTo(seekPos);
+					}
+					catch( IllegalStateException ise ) 
+					{
+						Log.d( TAG, "mediaPlayer.seekTo(): Caught illegalStateException: " + ise.toString() );
+					}
+				}
+
+				mediaPlayer.setLooping(false);
+
+				try 
+				{
+					mediaPlayer.start();
+				}
+				catch( IllegalStateException ise )
+				{
+					Log.d( TAG, "mediaPlayer.start(): Caught illegalStateException: " + ise.toString() );
+				}
+				
+				mediaPlayer.setVolume(1.0f, 1.0f);
+			}
+			else
+			{
+
+
 			}
 
-			mediaPlayer.setLooping(false);
-
-			try {
-				mediaPlayer.start();
-			}
-			catch( IllegalStateException ise ) {
-				Log.d( TAG, "mediaPlayer.start(): Caught illegalStateException: " + ise.toString() );
-			}
 			
-			mediaPlayer.setVolume(1.0f, 1.0f);
+
+
 
 			// Save the current movie now that it was successfully started
 			Editor edit = getPreferences(MODE_PRIVATE).edit();
