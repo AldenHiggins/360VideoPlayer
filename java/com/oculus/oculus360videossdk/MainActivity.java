@@ -178,13 +178,27 @@ public class MainActivity extends VrActivity implements android.graphics.Surface
 	public boolean isPlaying() {
 		try
 		{
-			if ( mediaPlayer != null ) {
+			if ( mediaPlayer != null) {
 				boolean playing = mediaPlayer.isPlaying();
 				if ( playing ) {
 					Log.d( TAG, "isPlaying() = true" );
 				} else {
 					Log.d( TAG, "isPlaying() = false" );
 			}
+
+			if ( secondMediaPlayer != null) 
+			{
+				playing = secondMediaPlayer.isPlaying();
+				if ( playing ) 
+				{
+					Log.d( TAG, "isPlaying() = true" );
+				} 
+				else
+				{
+					Log.d( TAG, "isPlaying() = false" );
+				}
+			}
+
 			return playing;
 		}
 			Log.d( TAG, "isPlaying() - NO MEDIA PLAYER" );
@@ -201,7 +215,7 @@ public class MainActivity extends VrActivity implements android.graphics.Surface
 		try {
 			if (mediaPlayer != null) {
 				Log.d(TAG, "movie paused" );
-				mediaPlayer.pause();
+				// mediaPlayer.pause();
 			}
 		}
 		catch( IllegalStateException ise ) {
@@ -212,10 +226,26 @@ public class MainActivity extends VrActivity implements android.graphics.Surface
 	public void resumeMovie() {
 		Log.d(TAG, "resumeMovie()" );
 		try {
-			if (mediaPlayer != null) {
+			if (mediaPlayer != null && !isUsingSecondMovie) {
 				Log.d(TAG, "movie started" );
 				mediaPlayer.start();
 				mediaPlayer.setVolume(1.0f, 1.0f);
+
+				if (secondMediaPlayer != null)
+				{
+					secondMediaPlayer.stop();
+				}
+			}
+
+			if (secondMediaPlayer != null && isUsingSecondMovie) {
+				Log.d(TAG, "SECOND movie started" );
+				secondMediaPlayer.start();
+				secondMediaPlayer.setVolume(1.0f, 1.0f);
+
+				if (mediaPlayer != null)
+				{
+					mediaPlayer.stop();
+				}
 			}
 		}
 		catch( IllegalStateException ise ) {
@@ -250,23 +280,20 @@ public class MainActivity extends VrActivity implements android.graphics.Surface
 
 	public void startMovie(String pathName) {
 		Log.v(TAG, "startMovie " + pathName);
+
+		if (pathName == "/storage/emulated/0/Oculus/360Videos/SampleVideo.mp4")
+		{
+			Log.v(TAG, "NATIVE IS DOING THE FIRST MOVIE");
+		}
+		else if (pathName == "/storage/emulated/0/Oculus/360Videos/MusicVideo.mp4")
+		{
+			Log.v(TAG, "NATIVE IS DOING THE SECOND MOVIE");
+		}
 		
 		synchronized (this) 
 		{
 			// Request audio focus
 			requestAudioFocus();
-
-			// SurfaceTexture movieTexture = null;
-			// Surface movieSurface = null;
-			// MediaPlayer mediaPlayer = null;	
-			// AudioManager audioManager = null;
-
-			// // Create a second set of video variables to allow for seamless swaps between two videos
-			// SurfaceTexture secondMovieTexture = null;
-			// Surface secondMovieSurface = null;
-			// MediaPlayer secondMediaPlayer = null;
-
-			// boolean isUsingSecondMovie = true;
 
 			if (isUsingSecondMovie)
 			{
@@ -340,16 +367,86 @@ public class MainActivity extends VrActivity implements android.graphics.Surface
 				}
 				
 				mediaPlayer.setVolume(1.0f, 1.0f);
+
+				isUsingSecondMovie = false;
 			}
 			else
 			{
+				// // Create a second set of video variables to allow for seamless swaps between two videos
+				// SurfaceTexture secondMovieTexture = null;
+				// Surface secondMovieSurface = null;
+				// MediaPlayer secondMediaPlayer = null;	
 
+				secondMovieTexture = nativePrepareNewVideo(getAppPtr());
+				secondMovieTexture.setOnFrameAvailableListener(this);
+				secondMovieSurface = new Surface(secondMovieTexture);
 
+				if (secondMediaPlayer != null) 
+				{
+					secondMediaPlayer.release();
+				}
+
+				Log.v(TAG, "Second MediaPlayer.create");
+
+				synchronized (this) 
+				{
+					secondMediaPlayer = new MediaPlayer();
+				}
+				secondMediaPlayer.setOnVideoSizeChangedListener(this);
+				secondMediaPlayer.setOnCompletionListener(this);
+				secondMediaPlayer.setSurface(secondMovieSurface);
+
+				try 
+				{
+					Log.v(TAG, "Second mediaPlayer.setDataSource()");
+					secondMediaPlayer.setDataSource(pathName);
+					try 
+					{
+						Log.v(TAG, "Second mediaPlayer.prepare");
+						secondMediaPlayer.prepare();
+					} 
+					catch (IOException t) 
+					{
+						Log.e(TAG, "Second mediaPlayer.prepare failed:" + t.getMessage());
+					}
+				} 
+				catch (IOException t)
+				{
+					Log.e(TAG, "Second mediaPlayer.setDataSource failed");
+				}
+
+				Log.v(TAG, "Second mediaPlayer.start");
+
+				// If this movie has a saved position, seek there before starting
+				// This seems to make movie switching crashier.
+				final int seekPos = getPreferences(MODE_PRIVATE).getInt(pathName + "_pos", 0);
+				if (seekPos > 0) 
+				{
+					try 
+					{
+						secondMediaPlayer.seekTo(seekPos);
+					}
+					catch( IllegalStateException ise ) 
+					{
+						Log.d( TAG, "Second mediaPlayer.seekTo(): Caught illegalStateException: " + ise.toString() );
+					}
+				}
+
+				secondMediaPlayer.setLooping(false);
+
+				try 
+				{
+					secondMediaPlayer.start();
+				}
+				catch( IllegalStateException ise )
+				{
+					Log.d( TAG, "Second mediaPlayer.start(): Caught illegalStateException: " + ise.toString() );
+				}
+				
+				secondMediaPlayer.setVolume(1.0f, 1.0f);
+
+				isUsingSecondMovie = true;
 			}
-
-			
-
-
 
 			// Save the current movie now that it was successfully started
 			Editor edit = getPreferences(MODE_PRIVATE).edit();

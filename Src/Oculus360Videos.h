@@ -143,6 +143,14 @@ private:
 	String					VideoName;
 	SurfaceTexture	* 		MovieTexture;
 
+	// variables that allow for the seamless transitions between two videos
+	bool 					isFirstVideoActive;
+	SurfaceTexture	* 		SecondMovieTexture;
+
+	bool					loadedFirstVideo;
+
+	int 					videoSizeChanges;
+
 	// Set when MediaPlayer knows what the stream size is.
 	// current is the aspect size, texture may be twice as wide or high for 3D content.
 	int						CurrentVideoWidth;	// set to 0 when a new movie is started, don't render until non-0

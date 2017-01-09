@@ -507,17 +507,36 @@ void Oculus360Videos::Command( const char * msg )
 
 	if ( MatchesHead( "newVideo ", msg ) )
 	{
-		delete MovieTexture;
-		MovieTexture = new SurfaceTexture( app->GetJava()->Env );
-		LOG( "RC_NEW_VIDEO texId %i", MovieTexture->GetTextureId() );
 
-		ovrMessageQueue * receiver;
-		sscanf( msg, "newVideo %p", &receiver );
+	// 	bool 					isFirstVideoActive;
+	// SurfaceTexture	* 		SecondMovieTexture;
 
-		receiver->PostPrintf( "surfaceTexture %p", MovieTexture->GetJavaObject() );
+		if (!isFirstVideoActive)
+		{
+			delete MovieTexture;
+			MovieTexture = new SurfaceTexture( app->GetJava()->Env );
+			LOG( "RC_NEW_VIDEO texId %i", MovieTexture->GetTextureId() );
+
+			ovrMessageQueue * receiver;
+			sscanf( msg, "newVideo %p", &receiver );
+
+			receiver->PostPrintf( "surfaceTexture %p", MovieTexture->GetJavaObject() );
+		}
+		else
+		{
+			delete SecondMovieTexture;
+			SecondMovieTexture = new SurfaceTexture( app->GetJava()->Env );
+			LOG( "CREATING SECOND MOVIE TEXTURE" );
+			LOG( "RC_NEW_VIDEO texId %i", SecondMovieTexture->GetTextureId() );
+
+			ovrMessageQueue * receiver;
+			sscanf( msg, "newVideo %p", &receiver );
+
+			receiver->PostPrintf( "surfaceTexture %p", SecondMovieTexture->GetJavaObject() );
+		}
 
 		// don't draw the screen until we have the new size
-		CurrentVideoWidth = 0;
+		// CurrentVideoWidth = 0;
 
 		return;
 	}
@@ -528,11 +547,55 @@ void Oculus360Videos::Command( const char * msg )
 	}
 	else if ( MatchesHead( "video ", msg ) )
 	{
-		sscanf( msg, "video %i %i", &CurrentVideoWidth, &CurrentVideoHeight );
+		// sscanf( msg, "video %i %i", &CurrentVideoWidth, &CurrentVideoHeight );
 
-		// SetMenuState( MENU_VIDEO_PAUSE );
+		// // SetMenuState( MENU_VIDEO_PAUSE );
+
+		// if (ActiveVideo->Url == TempVideoMetaData->Url)
+		// {
+		// 	LOG( "Setting the size for the sample video" );
+		// 	CurrentVideoWidth = 2048;
+		// 	CurrentVideoHeight = 1024;
+
+		// 	isFirstVideoActive = true;
+		// 	loadedFirstVideo = true;
+		// }
+		// else if (ActiveVideo->Url == SecondTempVideoMetaData->Url)
+		// {
+		// 	LOG( "Setting size for the music video" );
+		// 	CurrentVideoWidth = 1920;
+		// 	CurrentVideoHeight = 960;
+
+		// 	isFirstVideoActive = false;
+		// 	loadedFirstVideo = true;
+		// }
+
+		if (videoSizeChanges > 0)
+		{
+			if (ActiveVideo->Url == TempVideoMetaData->Url)
+			{
+				LOG( "Setting the size for the sample video" );
+				CurrentVideoWidth = 2048;
+				CurrentVideoHeight = 1024;
+
+				isFirstVideoActive = true;
+				loadedFirstVideo = true;
+				videoSizeChanges = 0;
+			}
+			else if (ActiveVideo->Url == SecondTempVideoMetaData->Url)
+			{
+				LOG( "Setting size for the music video" );
+				CurrentVideoWidth = 1920;
+				CurrentVideoHeight = 960;
+
+				isFirstVideoActive = false;
+				loadedFirstVideo = true;
+				videoSizeChanges = 0;
+			}
+		}
 
 
+		videoSizeChanges++;
 
 		if ( MenuState != MENU_VIDEO_PLAYING ) // If video is already being played dont change the state to video ready
 		{
@@ -725,6 +788,28 @@ void Oculus360Videos::ResumeVideo()
 {
 	LOG( "ResumeVideo()" );
 
+	// LOG("Facing forward and reverting back to teh first video");
+	// ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
+
+	// Switch the boolean designating the active movie
+	if (ActiveVideo->Url == TempVideoMetaData->Url)
+	{
+		LOG( "FIRST VIDEO IS ACTIVE" );
+		isFirstVideoActive = true;
+	}
+	else if (ActiveVideo->Url == SecondTempVideoMetaData->Url)
+	{
+		LOG( "SECOND VIDEO IS ACTIVE" );
+		isFirstVideoActive = false;
+	}
+	else
+	{
+
+		LOG( "Neither is active something went wrong" );
+	}
+
+	// isFirstVideoActive = !isFirstVideoActive;
+
 	GuiSys->CloseMenu( Browser, false );
 
 #if defined( OVR_OS_ANDROID )
@@ -815,18 +900,19 @@ void Oculus360Videos::SetMenuState( const OvrMenuState state )
 		GuiSys->GetGazeCursor().ShowCursor();
 		break;
 	case MENU_VIDEO_LOADING:
-		if ( MovieTexture != NULL )
-		{
-			delete MovieTexture;
-			MovieTexture = NULL;
-		}
+		// if ( MovieTexture != NULL )
+		// {
+		// 	delete MovieTexture;
+		// 	MovieTexture = NULL;
+		// }
+
 		GuiSys->CloseMenu( Browser, false );
 		GuiSys->CloseMenu( VideoMenu, false );
 		Fader.StartFadeOut();
 		GuiSys->GetGazeCursor().HideCursor();
 		break;
 	case MENU_VIDEO_READY:
-		ResumeVideo();
+		// ResumeVideo();
 		break;
 	case MENU_VIDEO_PLAYING:
 		Fader.Reset();
@@ -835,43 +921,33 @@ void Oculus360Videos::SetMenuState( const OvrMenuState state )
 		{
 			// Need to pause video, because HMD was unmounted during loading and we weren't able to
 			// pause during loading.
-			// PauseVideo( false );
+			PauseVideo( false );
 			GuiSys->GetGazeCursor().ShowCursor();
 		}
+
+		// if (ActiveVideo->Url == TempVideoMetaData->Url)
+		// {
+		// 	LOG( "FIRST VIDEO IS ACTIVE AND PLAYING" );
+		// 	isFirstVideoActive = true;
+		// 	loadedFirstVideo = true;
+		// 	CurrentVideoWidth = 2048;
+		// 	CurrentVideoHeight = 1024;
+		// }
+		// else if (ActiveVideo->Url == SecondTempVideoMetaData->Url)
+		// {
+		// 	LOG( "SECOND VIDEO IS ACTIVE AND PLAYING" );
+		// 	isFirstVideoActive = false;
+		// 	loadedFirstVideo = true;
+		// 	CurrentVideoWidth = 1920;
+		// 	CurrentVideoHeight = 960;
+		// }
+
 		break;
 	case MENU_VIDEO_PAUSE:
-		// THE OLD PAUSE MENU
 		GuiSys->OpenMenu( OvrVideoMenu::MENU_NAME );
 		VideoMenu->RepositionMenu( app->GetLastViewMatrix() );
 		PauseVideo( false );
 		GuiSys->GetGazeCursor().ShowCursor();
-		// LOG("Paused the video!!!!!");
-
-		// if (TempVideoMetaData == NULL)
-		// {
-		// 	LOG("Initializing our fake video meta data");
-		// 	TempVideoMetaData = new OvrVideosMetaDatum("TestingOneTwoThree");
-		// 	TempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/SampleVideo.mp4";
-
-		// 	SecondTempVideoMetaData = new OvrVideosMetaDatum("FourFiveSixTest");
-		// 	SecondTempVideoMetaData->Url = "/storage/emulated/0/Oculus/360Videos/MusicVideo.mp4";
-
-		// 	ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
-		// 	StartVideo( vrapi_GetTimeInSeconds() );
-		// 	LOG("Changed active video and tried to start a new one");
-		// }
-		// if (ActiveVideo == TempVideoMetaData)
-		// {
-		// 	LOG("Changed active back to first");
-		// 	ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
-		// 	StartVideo( vrapi_GetTimeInSeconds() );
-		// }
-		// else if (ActiveVideo == SecondTempVideoMetaData)
-		// {
-		// 	LOG("Changed active back to temp video meta data");
-		// 	ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
-		// 	StartVideo( vrapi_GetTimeInSeconds() );
-		// }
 		break;
 	case MENU_VIDEO_RESUME:
 		GuiSys->CloseMenu( VideoMenu, false );
@@ -959,9 +1035,16 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 
 	// Check for new video frames
 	// latch the latest movie frame to the texture.
-	if ( MovieTexture != NULL && CurrentVideoWidth != 0 )
+	// && isFirstVideoActive
+	// && !isFirstVideoActive
+	if ( MovieTexture != NULL && CurrentVideoWidth != 0)
 	{
 		MovieTexture->Update();
+		FrameAvailable = false;
+	}
+	if ( SecondMovieTexture != NULL && CurrentVideoWidth != 0)
+	{
+		SecondMovieTexture->Update();
 		FrameAvailable = false;
 	}
 
@@ -1002,15 +1085,22 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 	}
 
 	// State transitions
-	if ( Fader.GetFadeState() != Fader::FADE_NONE )
-	{
-		Fader.Update( CurrentFadeRate, vrFrame.DeltaSeconds );
-	}
-	else if ( ( MenuState == MENU_VIDEO_READY ) && ( Fader.GetFadeAlpha() == 0.0f ) && ( MovieTexture != NULL ) )
+	// if ( Fader.GetFadeState() != Fader::FADE_NONE )
+	// {
+	// 	Fader.Update( CurrentFadeRate, vrFrame.DeltaSeconds );
+	// }
+	// else if ( ( MenuState == MENU_VIDEO_READY ) && ( Fader.GetFadeAlpha() == 0.0f ) && (( MovieTexture != NULL ) || ( SecondMovieTexture != NULL ) ) )
+	// {
+	// 	SetMenuState( MENU_VIDEO_PLAYING );
+	// }
+
+	if ( ( MenuState == MENU_VIDEO_READY ) && (( MovieTexture != NULL ) || ( SecondMovieTexture != NULL ) ) )
 	{
 		SetMenuState( MENU_VIDEO_PLAYING );
 	}
-	CurrentFadeLevel = Fader.GetFinalAlpha();
+
+	// CurrentFadeLevel = Fader.GetFinalAlpha();
+	CurrentFadeLevel = 0.0f;
 
 	// Override the material on the background scene to allow the model to fade during state transitions.
 	{
@@ -1038,7 +1128,21 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 	// Update gui systems after the app frame, but before rendering anything.
 	GuiSys->Frame( vrFrame, res.FrameMatrices.CenterView );
 
-	const bool videoShowing = ( MenuState == MENU_VIDEO_PLAYING || MenuState == MENU_VIDEO_PAUSE ) && ( MovieTexture != NULL );
+	const bool videoShowing = ( MenuState == MENU_VIDEO_PLAYING || MenuState == MENU_VIDEO_PAUSE ) && (( MovieTexture != NULL ) || ( SecondMovieTexture != NULL ));
+
+	// if (videoShowing)
+	// {
+	// 	LOG("VIDEO SHOWING");
+	// }
+	// else
+	// {
+	// 	LOG("VIDEO NOT SHOWING");
+
+	// 	if (SecondMovieTexture != NULL)
+	// 	{
+	// 		LOG("Weird");
+	// 	}
+	// }
 
 	//-------------------------------
 	// Rendering
@@ -1059,9 +1163,26 @@ ovrFrameResult Oculus360Videos::Frame( const ovrFrameInput & vrFrame )
 		layer.Textures[eye].HeadPose = vrFrame.Tracking.HeadPose;
 	}
 
-	if ( videoShowing )
+	if ( videoShowing || loadedFirstVideo )
 	{
-		GlobeProgramTexture[0] = GlTexture( MovieTexture->GetTextureId(), GL_TEXTURE_EXTERNAL_OES, 0, 0 );
+		if (isFirstVideoActive)
+		{
+			GlobeProgramTexture[0] = GlTexture( MovieTexture->GetTextureId(), GL_TEXTURE_EXTERNAL_OES, 0, 0 );
+		}
+		else
+		{
+			GlobeProgramTexture[0] = GlTexture( SecondMovieTexture->GetTextureId(), GL_TEXTURE_EXTERNAL_OES, 0, 0 );
+		}
+
+		// if ( SecondMovieTexture != NULL )
+		// {
+		// 	GlobeProgramTexture[0] = GlTexture( SecondMovieTexture->GetTextureId(), GL_TEXTURE_EXTERNAL_OES, 0, 0 );
+		// }
+		// else
+		// {
+		// 	GlobeProgramTexture[0] = GlTexture( MovieTexture->GetTextureId(), GL_TEXTURE_EXTERNAL_OES, 0, 0 );
+		// }
+
 		GlobeProgramTexture[1] = GlTexture( BackgroundTexId, GL_TEXTURE_2D, 0, 0 );
 		GlobeProgramColor = Vector4f( 1.0f );
 		GlobeProgramMatrices[0] = TexmForVideo( 0 );
@@ -1118,6 +1239,8 @@ void Oculus360Videos::CheckToSwitchVideo(Quat<float> rotationQuat)
 			LOG("Facing away and switching to the second video");
 			ActiveVideo = static_cast<OvrMetaDatum *>(SecondTempVideoMetaData);
 			// MessageQueue.PostPrintf( "video 2048 1024");
+
+			videoSizeChanges = 0;
 		
 			StartVideo( vrapi_GetTimeInSeconds() );
 		}
@@ -1132,7 +1255,7 @@ void Oculus360Videos::CheckToSwitchVideo(Quat<float> rotationQuat)
 			ActiveVideo = static_cast<OvrMetaDatum *>(TempVideoMetaData);
 			// MessageQueue.PostPrintf( "video 1920 960");
 
-			
+			videoSizeChanges = 0;
 
 			StartVideo( vrapi_GetTimeInSeconds() );
 		}
